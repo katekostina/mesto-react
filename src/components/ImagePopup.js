@@ -12,7 +12,7 @@ function ImagePopup(props) {
           className="popup__close-button"
           type="button"
           onClick={props.onClose}
-        ></button>
+        />
         <img
           className="popup__image"
           src={props.card ? props.card.link : "#"}

@@ -1,4 +1,10 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Mesto (React)
+This is a study project on React.
+Made by Kate Kostina, a student of 16-darkmagenta group on Yandex Praktikum.
+
+## Github Pages: https://katekostina.github.io/mesto-react/
+
 
 ## Available Scripts
 

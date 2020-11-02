@@ -34,7 +34,7 @@ function Main(props) {
             <button
               className="profile__edit-avatar-button"
               onClick={props.onEditAvatar}
-            ></button>
+            />
           </div>
           <div className="profile__description">
             <div className="profile__top-line">
@@ -43,7 +43,7 @@ function Main(props) {
                 className="profile__edit-button"
                 type="button"
                 onClick={props.onEditProfile}
-              ></button>
+              />
             </div>
             <p className="profile__caption">{userDescription}</p>
           </div>
@@ -52,7 +52,7 @@ function Main(props) {
           className="profile__add-button"
           type="button"
           onClick={props.onAddPlace}
-        ></button>
+        />
       </section>
       <section className="cards">
         {cards.map((card) => (

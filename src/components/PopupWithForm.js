@@ -11,10 +11,10 @@ function PopupWithForm(props) {
           className="popup__close-button"
           type="button"
           onClick={props.onClose}
-        ></button>
+        />
         <h2 className="popup__heading">{props.title}</h2>
         {props.children}
-        <button className="popup__submit-button" type="submit"></button>
+        <button className="popup__submit-button" type="submit"/>
       </form>
     </article>
   );
