@@ -1,8 +1,10 @@
+@import url(./_state/card__heart_state_not_liked.css);
+@import url(./_state/card__heart_state_liked.css);
+
 .card__heart {
     border: none;
     background-color: transparent;
     padding: 0;
-    background-image: url(../../../images/heart.svg);
     width: 21px;
     height: 18px;
     color: #000;
