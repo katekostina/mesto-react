@@ -1,19 +1,16 @@
 import React from "react";
 import api from "../utils/api.js";
 import Card from "./Card.js";
+import CurrentUserContext from "../contexts/CurrentUserContext.js";
 
 function Main(props) {
-  const [userName, setUserName] = React.useState("");
-  const [userDescription, setUserDescription] = React.useState("");
-  const [userAvatar, setUserAvatar] = React.useState("");
   const [cards, setCards] = React.useState([]);
+  const currentUser = React.useContext(CurrentUserContext);
 
   React.useEffect(() => {
-    Promise.all([api.getUserProfile(), api.getInitialCards()])
-      .then(([userData, initialCards]) => {
-        setUserName(userData.name);
-        setUserDescription(userData.about);
-        setUserAvatar(userData.avatar);
+    api
+      .getInitialCards()
+      .then((initialCards) => {
         setCards(initialCards.reverse());
       })
       .catch((error) => {
@@ -27,7 +24,7 @@ function Main(props) {
         <div className="profile__info">
           <div className="profile__avatar-container">
             <img
-              src={userAvatar}
+              src={currentUser.avatar}
               alt="Аватар пользователя"
               className="profile__avatar"
             />
@@ -38,14 +35,14 @@ function Main(props) {
           </div>
           <div className="profile__description">
             <div className="profile__top-line">
-              <h1 className="profile__name">{userName}</h1>
+              <h1 className="profile__name">{currentUser.name}</h1>
               <button
                 className="profile__edit-button"
                 type="button"
                 onClick={props.onEditProfile}
               />
             </div>
-            <p className="profile__caption">{userDescription}</p>
+            <p className="profile__caption">{currentUser.about}</p>
           </div>
         </div>
         <button
@@ -56,7 +53,7 @@ function Main(props) {
       </section>
       <section className="cards">
         {cards.map((card) => (
-          <Card card={card} key={card._id} onCardClick={props.onCardClick} />
+          <Card key={card._id} card={card} onCardClick={props.onCardClick} />
         ))}
       </section>
     </main>
