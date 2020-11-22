@@ -1,22 +1,9 @@
 import React from "react";
-import api from "../utils/api.js";
 import Card from "./Card.js";
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
 
-function Main(props) {
-  const [cards, setCards] = React.useState([]);
+function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, cards, onCardLike, onCardDelete }) {
   const currentUser = React.useContext(CurrentUserContext);
-
-  React.useEffect(() => {
-    api
-      .getInitialCards()
-      .then((initialCards) => {
-        setCards(initialCards.reverse());
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   return (
     <main className="content">
@@ -30,7 +17,7 @@ function Main(props) {
             />
             <button
               className="profile__edit-avatar-button"
-              onClick={props.onEditAvatar}
+              onClick={onEditAvatar}
             />
           </div>
           <div className="profile__description">
@@ -39,7 +26,7 @@ function Main(props) {
               <button
                 className="profile__edit-button"
                 type="button"
-                onClick={props.onEditProfile}
+                onClick={onEditProfile}
               />
             </div>
             <p className="profile__caption">{currentUser.about}</p>
@@ -48,12 +35,18 @@ function Main(props) {
         <button
           className="profile__add-button"
           type="button"
-          onClick={props.onAddPlace}
+          onClick={onAddPlace}
         />
       </section>
       <section className="cards">
         {cards.map((card) => (
-          <Card key={card._id} card={card} onCardClick={props.onCardClick} />
+          <Card
+            key={card._id}
+            card={card}
+            onCardClick={onCardClick}
+            onCardLike={onCardLike}
+            onCardDelete={onCardDelete}
+          />
         ))}
       </section>
     </main>
