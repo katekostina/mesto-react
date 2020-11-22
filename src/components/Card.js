@@ -1,24 +1,40 @@
 import React from "react";
+import CurrentUserContext from "../contexts/CurrentUserContext.js";
 
-function Card(props) {
+function Card({card, onCardClick, onCardLike, onCardDelete}) {
+  const currentUser = React.useContext(CurrentUserContext);
+  const isOwn = card.owner._id === currentUser._id;
+  const isLiked = card.likes.some(like => like._id === currentUser._id);
+  const heartButtonClassName = `card__heart ${isLiked ? 'card__heart_state_liked' : 'card__heart_state_not_liked' }`;
+
   function handleClick() {
-    props.onCardClick(props.card);
+    onCardClick(card);
+  }
+
+  function handleLikeClick() {
+    onCardLike(card);
+  }
+
+  function handleDeleteClick() {
+    onCardDelete(card);
   }
 
   return (
     <figure className="card">
-      <button className="card__delete" type="button"/>
+      {isOwn && (
+        <button className="card__delete" type="button" onClick={handleDeleteClick} />
+      )}
       <img
-        src={props.card.link}
-        alt=""
+        src={card.link}
+        alt={card.name}
         className="card__image"
         onClick={handleClick}
       />
       <figcaption className="card__caption">
-        <p className="card__name">{props.card.name}</p>
+        <p className="card__name">{card.name}</p>
         <div className="card__like-container">
-          <button className="card__heart" type="button"/>
-          <p className="card__likes">{props.card.likes.length}</p>
+          <button className={heartButtonClassName} type="button" onClick={handleLikeClick} />
+          <p className="card__likes">{card.likes.length}</p>
         </div>
       </figcaption>
     </figure>
