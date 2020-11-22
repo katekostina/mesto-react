@@ -4,6 +4,9 @@ import Header from "./Header.js";
 import Main from "./Main.js";
 import Footer from "./Footer.js";
 import PopupWithForm from "./PopupWithForm.js";
+import EditProfilePopup from "./EditProfilePopup.js";
+import EditAvatarPopup from "./EditAvatarPopup.js";
+import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup.js";
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
 
@@ -15,17 +18,61 @@ function App() {
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(undefined);
   const [currentUser, setCurrentUser] = React.useState({});
+  const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
     api
-      .getUserProfile()
-      .then((userData) => {
-        setCurrentUser(userData);
+      .getCards()
+      .then((initialCards) => {
+        setCards(initialCards);
       })
       .catch((error) => {
         console.log(error);
       });
+
+    // api.postNewCard('Доделала', 'http://img0.reactor.cc/pics/post/full/%D1%88%D0%BA%D1%8F-%D0%9A%D0%BE%D0%BC%D0%B8%D0%BA%D1%81%D1%8B-4795888.jpeg');
   }, []);
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((like) => like._id === currentUser._id);
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
+        setCards(newCards);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function handleCardDelete(card) {
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        const newCards = cards.filter((c) => c._id !== card._id);
+        setCards(newCards);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function handleAddPlaceSubmit({ name, link }) {
+    api
+      .postNewCard(name, link)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    closeAllPopups();
+  }
+
+  function handleCardClick(card) {
+    setSelectedCard(card);
+  }
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
@@ -46,8 +93,39 @@ function App() {
     setSelectedCard(undefined);
   }
 
-  function handleCardClick(card) {
-    setSelectedCard(card);
+  React.useEffect(() => {
+    updateUserInfo();
+  }, []);
+
+  function updateUserInfo() {
+    api
+      .getUserProfile()
+      .then((userData) => {
+        setCurrentUser(userData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function handleUpdateUser({ name, about }) {
+    api
+      .patchUserProfile(name, about)
+      .then(() => updateUserInfo())
+      .catch((error) => {
+        console.log(error);
+      });
+    closeAllPopups();
+  }
+
+  function handleUpdateAvatar({ avatar }) {
+    api
+      .patchUserAvatar(avatar)
+      .then(() => updateUserInfo())
+      .catch((error) => {
+        console.log(error);
+      });
+    closeAllPopups();
   }
 
   return (
@@ -59,92 +137,29 @@ function App() {
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
           onCardClick={handleCardClick}
+          cards={cards}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
         />
         <Footer />
 
-        <PopupWithForm
-          title="Обновить аватар"
-          name="avatar"
+        <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
-        >
-          <input
-            className="popup__input"
-            type="url"
-            name="avatarurl"
-            id="avatarurl"
-            defaultValue=""
-            placeholder="Ссылка на картинку"
-            required
-          />
-          <span className="popup__error-text" id="avatarurl-error-text"></span>
-        </PopupWithForm>
+          onUpdateAvatar={handleUpdateAvatar}
+        />
 
-        <PopupWithForm
-          title="Редактировать профиль"
-          name="profile"
+        <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
-        >
-          <input
-            className="popup__input"
-            type="text"
-            name="profilename"
-            id="profilename"
-            required
-            minLength="2"
-            maxLength="40"
-            defaultValue=""
-          />
-          <span
-            className="popup__error-text"
-            id="profilename-error-text"
-          ></span>
-          <input
-            className="popup__input"
-            type="text"
-            name="profilecaption"
-            id="profilecaption"
-            defaultValue=""
-            required
-            minLength="2"
-            maxLength="200"
-          />
-          <span
-            className="popup__error-text"
-            id="profilecaption-error-text"
-          ></span>
-        </PopupWithForm>
+          onUpdateUser={handleUpdateUser}
+        />
 
-        <PopupWithForm
-          title="Новое место"
-          name="place"
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-        >
-          <input
-            className="popup__input"
-            type="text"
-            name="placename"
-            id="placename"
-            defaultValue=""
-            placeholder="Название"
-            required
-            minLength="1"
-            maxLength="30"
-          />
-          <span className="popup__error-text" id="placename-error-text"></span>
-          <input
-            className="popup__input"
-            type="url"
-            name="placeurl"
-            id="placeurl"
-            defaultValue=""
-            placeholder="Ссылка на картинку"
-            required
-          />
-          <span className="popup__error-text" id="placeurl-error-text"></span>
-        </PopupWithForm>
+          onAddPlaceSubmit={handleAddPlaceSubmit}
+        />
 
         <PopupWithForm title="Вы уверены?" name="confirm-delete" />
 

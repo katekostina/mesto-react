@@ -17,7 +17,7 @@ class Api {
     );
   }
 
-  getInitialCards() {
+  getCards() {
     return fetch(`${this._baseUrl}/cards`, { headers: this._headers }).then(
       handleOriginalResponse
     );
@@ -62,26 +62,28 @@ class Api {
     }).then(handleOriginalResponse);
   }
 
-  putLikeOnCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-      method: "PUT",
-      headers: this._headers,
-    }).then(handleOriginalResponse);
-  }
-
-  deleteLikeOnCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-      method: "DELETE",
-      headers: this._headers,
-    }).then(handleOriginalResponse);
+  changeLikeCardStatus(cardId, newIsLikedStatus) {
+    if (newIsLikedStatus === true) {
+      return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+        method: "PUT",
+        headers: this._headers,
+      }).then(handleOriginalResponse);
+    } else if (newIsLikedStatus === false) {
+      return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+        method: "DELETE",
+        headers: this._headers,
+      }).then(handleOriginalResponse);
+    } else {
+      console.log("must be some mistake with type of newIsLikedStatus, ane-tyan");
+    }
   }
 }
 
 // Create object with my token and base server url
 const api = new Api({
-  baseUrl: "https://mesto.nomoreparties.co/v1/cohort-14",
+  baseUrl: "https://mesto.nomoreparties.co/v1/cohort-16",
   headers: {
-    authorization: "4ae30d7d-6481-4bd9-8c0e-4ec6c8bc77e4",
+    authorization: "9add9005-2467-45a6-b5f2-638a93011fb5",
     "Content-Type": "application/json",
   },
 });
