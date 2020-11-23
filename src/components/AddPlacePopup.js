@@ -5,14 +5,19 @@ function AddPlacePopup({ isOpen, onClose, onAddPlaceSubmit }) {
   const nameInputRef = React.useRef();
   const linkInputRef = React.useRef();
 
+  React.useEffect(() => {
+    if (!isOpen) {
+      nameInputRef.current.value = '';
+      linkInputRef.current.value = '';
+    }
+  }, [isOpen]);
+
   function handleSubmit(e) {
     e.preventDefault();
     onAddPlaceSubmit({
       name: nameInputRef.current.value,
       link: linkInputRef.current.value,
     });
-    nameInputRef.current.value = '';
-    linkInputRef.current.value ='';
   }
 
   return (
@@ -22,6 +27,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlaceSubmit }) {
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      buttonText="Создать"
     >
       <input
         className="popup__input"
