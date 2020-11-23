@@ -4,6 +4,12 @@ import PopupWithForm from "./PopupWithForm";
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
   const urlInputRef = React.useRef();
 
+  React.useEffect(() => {
+    if (!isOpen) {
+      urlInputRef.current.value = '';
+    }
+  }, [isOpen]);
+
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateAvatar({
@@ -18,6 +24,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      buttonText="Сохранить"
     >
       <input
         className="popup__input"

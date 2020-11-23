@@ -29,8 +29,6 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
-
-    // api.postNewCard('Доделала', 'http://img0.reactor.cc/pics/post/full/%D1%88%D0%BA%D1%8F-%D0%9A%D0%BE%D0%BC%D0%B8%D0%BA%D1%81%D1%8B-4795888.jpeg');
   }, []);
 
   function handleCardLike(card) {
@@ -111,21 +109,25 @@ function App() {
   function handleUpdateUser({ name, about }) {
     api
       .patchUserProfile(name, about)
-      .then(() => updateUserInfo())
+      .then(() => {
+        updateUserInfo();
+        closeAllPopups();
+      })
       .catch((error) => {
         console.log(error);
       });
-    closeAllPopups();
   }
 
   function handleUpdateAvatar({ avatar }) {
     api
       .patchUserAvatar(avatar)
-      .then(() => updateUserInfo())
+      .then(() => {
+        updateUserInfo();
+        closeAllPopups();
+      })
       .catch((error) => {
         console.log(error);
       });
-    closeAllPopups();
   }
 
   return (
@@ -161,7 +163,11 @@ function App() {
           onAddPlaceSubmit={handleAddPlaceSubmit}
         />
 
-        <PopupWithForm title="Вы уверены?" name="confirm-delete" />
+        <PopupWithForm
+          title="Вы уверены?"
+          name="confirm-delete"
+          buttonText="Да"
+        />
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
       </div>
